@@ -1,0 +1,47 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: trailing-whitespace
+        files: (^|/)a/.+\.(py|html|sh|css|js)$
+      - id: end-of-file-fixer
+      #      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/grantjenks/blue.git
+    rev: v0.9.0
+    hooks:
+      - id: blue
+
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.2.1
+    hooks:
+      - id: reorder-python-imports
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: '3.9.2'
+    hooks:
+      - id: flake8
+        args: [ "--config=tox.ini" ]
+        language_version: python3
+        stages: [ commit ]
+
+  - repo: local
+    hooks:
+      - id: lint
+        name: lint
+        entry: bash -c 'make lint'
+        language: system
+        pass_filenames: false
+        fail_fast: true
+        stages: [ commit ]
+      - id: pytest
+        name: pytest
+        stages: [ commit ]
+        language: system
+        entry: pytest -x
+        types: [ python ]
+        pass_filenames: false
+        always_run: true
